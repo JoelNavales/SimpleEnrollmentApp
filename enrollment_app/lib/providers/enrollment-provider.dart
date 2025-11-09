@@ -2,30 +2,46 @@ import 'package:flutter/foundation.dart';
 import '../models/student.dart';
 import '../models/course.dart';
 
-class EnrollmentProvider extends ChangeNotifier{
+class EnrollmentProvider extends ChangeNotifier {
+  // Current input before confirming
   Student? _student;
-  Course? _selectedCourse;
+  List<Course> selectedCourses = [];
+
+  // List of confirmed enrollments
+  List<Map<String, dynamic>> enrollments = [];
 
   Student? get student => _student;
-  Course? get selectedCourse => _selectedCourse;
 
   void setStudent(Student student) {
     _student = student;
     notifyListeners();
   }
 
-  void setSelectedCourse(Course course) {
-    _selectedCourse = course;
+  void toggleCourseSelection(Course course) {
+    if (selectedCourses.contains(course)) {
+      selectedCourses.remove(course);
+    } else {
+      selectedCourses.add(course);
+    }
     notifyListeners();
   }
 
-  void clearEnrollment() {
+  // Confirm enrollment and save to list
+  void confirmEnrollment() {
+    if (_student != null && selectedCourses.isNotEmpty) {
+      enrollments.add({
+        'student': _student,
+        'courses': List<Course>.from(selectedCourses), // copy the list
+      });
+      clearCurrentEntry();
+      notifyListeners();
+    }
+  }
+
+  // Clear current input (ready for new student)
+  void clearCurrentEntry() {
     _student = null;
-    _selectedCourse = null;
+    selectedCourses.clear();
     notifyListeners();
-  }
-
-  bool isenrolled() {
-    return _student != null && _selectedCourse != null;
   }
 }

@@ -8,11 +8,11 @@ class CourseSelectionScreen extends StatelessWidget {
   CourseSelectionScreen({super.key});
 
   final List<Course> courses = [
-    Course(id: 'SPELEC1b', title: 'Mobile Development 1', credits: 3, instructor: 'Sir Ahdzleebee Formentera'),
-    Course(id: 'IM2001', title: 'Information Management 1', credits: 3, instructor: 'Sir Gene Abello'),
-    Course(id: 'SPELEC1a', title: 'Web Application Development 1', credits: 3, instructor: 'Sir Roderick Bandalan'),
-    Course(id: 'NET2003', title: 'Networking 2', credits: 3, instructor: 'Sir Vincent Patalita III'),
-    Course(id: 'TECHNO302', title: 'Technoprenuership', credits: 3, instructor: 'Sir Arthur James Aliazon'),
+    Course(id: 'SPELEC1b', title: 'Mobile Development 1', units: 3, instructor: 'Sir Ahdzleebee Formentera'),
+    Course(id: 'IM2001', title: 'Information Management 1', units: 3, instructor: 'Sir Gene Abello'),
+    Course(id: 'SPELEC1a', title: 'Web Application Development 1', units: 3, instructor: 'Sir Roderick Bandalan'),
+    Course(id: 'NET2003', title: 'Networking 2', units: 3, instructor: 'Sir Vincent Patalita III'),
+    Course(id: 'TECHNO302', title: 'Technoprenuership', units: 3, instructor: 'Sir Arthur James Aliazon'),
   ];
 
   @override
@@ -33,8 +33,8 @@ class CourseSelectionScreen extends StatelessWidget {
         ),
         backgroundColor: Colors.transparent,
         elevation: 0,
-        iconTheme: const IconThemeData(color: Color.fromARGB(255, 255, 255, 255)),
-        titleTextStyle: const TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
+        iconTheme: const IconThemeData(color: Colors.white),
+        titleTextStyle: const TextStyle(color: Colors.white),
       ),
       body: Stack(
         children: [
@@ -47,16 +47,18 @@ class CourseSelectionScreen extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: EdgeInsets.fromLTRB(20,150, 20, 20),
+            padding: const EdgeInsets.fromLTRB(20, 150, 20, 20),
             child: Consumer<EnrollmentProvider>(
               builder: (context, provider, child) {
-                final Course? selectedCourse = provider.selectedCourse;
+                final selectedCourses = provider.selectedCourses;
+
                 return ListView.builder(
-                  padding: const EdgeInsets.only(bottom: 8),
+                  padding: const EdgeInsets.only(bottom: 80),
                   itemCount: courses.length,
                   itemBuilder: (context, index) {
                     final course = courses[index];
-                    final isSelected = selectedCourse == course;
+                    final isSelected = selectedCourses.contains(course);
+
                     return Container(
                       margin: const EdgeInsets.symmetric(vertical: 10),
                       decoration: BoxDecoration(
@@ -70,10 +72,7 @@ class CourseSelectionScreen extends StatelessWidget {
                       child: CheckboxListTile(
                         value: isSelected,
                         onChanged: (bool? selected) {
-                          if (selected == true) {
-                            provider.setSelectedCourse(course);
-                            Navigator.pushNamed(context, '/enrollment-review');
-                          }
+                          provider.toggleCourseSelection(course);
                         },
                         title: RichText(
                           text: TextSpan(
@@ -96,7 +95,10 @@ class CourseSelectionScreen extends StatelessWidget {
                             ],
                           ),
                         ),
-                        subtitle: Text('Credits: ${course.credits}, Instructor: ${course.instructor}'),
+                        subtitle: Text(
+                          'Credits: ${course.units}, Instructor: ${course.instructor}',
+                          style: const TextStyle(color: Colors.black87),
+                        ),
                         controlAffinity: ListTileControlAffinity.leading,
                         activeColor: Colors.blue,
                         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -109,6 +111,33 @@ class CourseSelectionScreen extends StatelessWidget {
           ),
         ],
       ),
-    );
+floatingActionButton: Consumer<EnrollmentProvider>(
+  builder: (context, provider, child) {
+    return ElevatedButton(
+      onPressed: () {
+        if (provider.selectedCourses.isEmpty) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Please select at least one course')),
+          );
+        } else {
+          Navigator.pushNamed(context, '/enrollment-review');
+        }
+      },
+      style: ElevatedButton.styleFrom(
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: const [
+          Text("Next"),
+          SizedBox(width: 8),
+          Icon(Icons.arrow_forward),
+            ],
+          ),
+        );
+      },
+    ),
+  );
   }
-}
+} 
+

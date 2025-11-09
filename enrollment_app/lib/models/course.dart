@@ -1,13 +1,13 @@
 class Course {
   String id;
   String title;
-  int credits;
+  int units;
   String instructor;
 
   Course({
     required this.id,
     required this.title,
-    required this.credits,
+    required this.units,
     required this.instructor,
   });
 

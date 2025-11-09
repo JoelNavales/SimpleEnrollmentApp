@@ -139,6 +139,7 @@ class _StudentInfoScreenState extends State<StudentInfoScreen> {
                       },
                       child: const Text('Next'),
                     ),
+                    
                   ],
                 ),
               ),

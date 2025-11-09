@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        initialRoute: '/',  // Start with intro
+        initialRoute: '/',
         routes: {
           '/': (context) => const HomeScreen(),
           '/student-info': (context) => const StudentInfoScreen(),
