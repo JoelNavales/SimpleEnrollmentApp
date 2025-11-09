@@ -21,7 +21,9 @@ class MyApp extends StatelessWidget {
       create: (context) => EnrollmentProvider(),  // Global state
       child: MaterialApp(
         title: 'Course Enrollment App',
-        theme: ThemeData(primarySwatch: Colors.blue),
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
         initialRoute: '/',  // Start with intro
         routes: {
           '/': (context) => const HomeScreen(),
